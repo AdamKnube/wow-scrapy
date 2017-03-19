@@ -6,7 +6,7 @@ from subprocess import call
 from zipfile import ZipFile
 from time import localtime, strftime
 
-_debug_mode_ = True
+_debug_mode_ = False
 
 class QuotesSpider(scrapy.Spider):
 	name = "curse_spider"
@@ -29,6 +29,7 @@ class QuotesSpider(scrapy.Spider):
 		if ((apath is None) or (not path.isdir(apath))): self.fatality('Error: Output path does not exist!')
 		self.odir = path.abspath(apath)
 		urls = []
+		self.dprint('Reading config file: ' + self.odir, True)
 		try:
 			cdata = open(cfile)
 			for conf in cdata:
@@ -52,10 +53,10 @@ class QuotesSpider(scrapy.Spider):
 				z = ZipFile(BytesIO(response.body))
 				self.dprint('Testing: ' + dfile)
 				if z.testzip() is not None: self.fatality('Error: ' + dfile + ' is corrupted!')
-				
 				self.dprint("Extracting: " + dfile + " -> " + self.odir)
 				z.extractall(self.odir)
 				z.close()
+				self.dprint('Finished: ' + dfile + ' -> ' + self.odir, True)
 			else:
 				dlink = response.css('div.countdown a::attr(data-href)').extract_first()
 				self.dprint("Found download link: " + dlink)
