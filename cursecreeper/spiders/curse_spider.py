@@ -29,7 +29,7 @@ class QuotesSpider(scrapy.Spider):
 		if ((apath is None) or (not path.isdir(apath))): self.fatality('Error: Output path does not exist!')
 		self.odir = path.abspath(apath)
 		urls = []
-		self.dprint('Reading config file: ' + self.odir, True)
+		self.dprint('Reading config file: ' + cfile, True)
 		try:
 			cdata = open(cfile)
 			for conf in cdata:
