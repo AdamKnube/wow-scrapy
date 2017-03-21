@@ -56,7 +56,7 @@ class QuotesSpider(scrapy.Spider):
 				self.dprint("Extracting: " + fname + " -> " + self.odir)
 				z.extractall(self.odir)
 				z.close()
-				self.dprint('Finished: ' + fname + ' -> ' + self.odir, True)
+				self.dprint('Extracted: ' + fname + ' -> ' + self.odir, True)
 			else:
 				dlink = response.css('div.countdown a::attr(data-href)').extract_first()
 				self.dprint("Found download link: " + dlink)
