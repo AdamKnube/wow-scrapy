@@ -48,15 +48,15 @@ class QuotesSpider(scrapy.Spider):
 			yield scrapy.Request(redir, self.parse, dont_filter=True)
 		elif response.status == 200:
 			if response.url[-4:].lower() == '.zip':
-				dfile = path.join(self.odir, response.url.split("/")[-1])
-				self.dprint("Found zip file: " + dfile)
+				fname = response.url.split("/")[-1]
+				self.dprint("Found zip file: " + fname)
 				z = ZipFile(BytesIO(response.body))
-				self.dprint('Testing: ' + dfile)
-				if z.testzip() is not None: self.fatality('Error: ' + dfile + ' is corrupted!')
-				self.dprint("Extracting: " + dfile + " -> " + self.odir)
+				self.dprint('Testing: ' + fname)
+				if z.testzip() is not None: self.fatality('Error: ' + fname + ' is corrupted!')
+				self.dprint("Extracting: " + fname + " -> " + self.odir)
 				z.extractall(self.odir)
 				z.close()
-				self.dprint('Finished: ' + dfile + ' -> ' + self.odir, True)
+				self.dprint('Finished: ' + fname + ' -> ' + self.odir, True)
 			else:
 				dlink = response.css('div.countdown a::attr(data-href)').extract_first()
 				self.dprint("Found download link: " + dlink)
