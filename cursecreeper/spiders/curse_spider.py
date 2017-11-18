@@ -1,5 +1,9 @@
+import sys
 import scrapy
-import urllib
+if (sys.version_info > (3, 0)):
+	import urllib
+else:
+	import urlparse
 from io import BytesIO
 from shutil import rmtree
 from os import path, getcwd
@@ -64,7 +68,10 @@ class QuotesSpider(scrapy.Spider):
 				self.dprint(thisisbase)
 				relink = response.css('div.download_box a::attr(href)').extract_first()
 				self.dprint("Found download link: " + relink)
-				dlink = urllib.parse.urljoin(response.url, relink.strip())
+				if (sys.version_info > (3, 0)):
+					dlink = urllib.parse.urljoin(response.url, relink.strip())
+				else:
+					dlink = urlparse.urljoin(response.url, relink.strip())
 				self.dprint("Trying download link: " + dlink)				
 				yield scrapy.Request(dlink, self.parse)
 		
