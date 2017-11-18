@@ -1,10 +1,12 @@
 import scrapy
+import urllib
 from io import BytesIO
 from shutil import rmtree
 from os import path, getcwd
 from subprocess import call
 from zipfile import ZipFile
 from time import localtime, strftime
+from scrapy.utils.response import get_base_url
 
 _debug_mode_ = False
 
@@ -17,7 +19,7 @@ class QuotesSpider(scrapy.Spider):
 	def dprint(self, data='', force=False):
 		if data == '': return
 		global _debug_mode_
-		if (force == True) or (_debug_mode_ ==True): print(self.time_stamp() + " - " + data)
+		if (force == True) or (_debug_mode_ == True): print(self.time_stamp() + " - " + data)
 
 	def fatality(self, finishingmove):
 		self.dprint(finishingmove, True)
@@ -58,7 +60,11 @@ class QuotesSpider(scrapy.Spider):
 				z.close()
 				self.dprint('Extracted: ' + fname + ' -> ' + self.odir, True)
 			else:
-				dlink = response.css('div.countdown a::attr(data-href)').extract_first()
-				self.dprint("Found download link: " + dlink)
+				thisisbase = get_base_url(response)
+				self.dprint(thisisbase)
+				relink = response.css('div.download_box a::attr(href)').extract_first()
+				self.dprint("Found download link: " + relink)
+				dlink = urllib.parse.urljoin(response.url, relink.strip())
+				self.dprint("Trying download link: " + dlink)				
 				yield scrapy.Request(dlink, self.parse)
 		
