@@ -16,7 +16,7 @@ _debug_mode_ = False
 
 class QuotesSpider(scrapy.Spider):
 	name = "curse_spider"
-	handle_httpstatus_list = [302]
+#	handle_httpstatus_list = [302]
 	
 	def time_stamp(self): return strftime("[%H:%M:%S]", localtime())
 
